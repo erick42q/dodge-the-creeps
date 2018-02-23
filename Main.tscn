@@ -1,0 +1,106 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Main.gd" type="Script" id=1]
+[ext_resource path="res://Mod.tscn" type="PackedScene" id=2]
+[ext_resource path="res://space.jpg" type="Texture" id=3]
+[ext_resource path="res://Player.tscn" type="PackedScene" id=4]
+[ext_resource path="res://HUD.tscn" type="PackedScene" id=5]
+[ext_resource path="res://dodge_assets/art/House In a Forest Loop.ogg" type="AudioStream" id=6]
+[ext_resource path="res://dodge_assets/art/gameover.wav" type="AudioStream" id=7]
+
+[sub_resource type="Curve2D" id=1]
+
+bake_interval = 5.0
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, -0.509735, 0.506927, 0, 0, 0, 0, 480.377, 0.506927, 0, 0, 0, 0, 480.312, 719.962, 0, 0, 0, 0, -0.460213, 719.94, 0, 0, 0, 0, -0.509735, 0.506927 )
+}
+
+[node name="Main" type="Node" index="0"]
+
+script = ExtResource( 1 )
+Mod = ExtResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="." index="0"]
+
+position = Vector2( 240.723, 340.353 )
+rotation = 1.5708
+scale = Vector2( 1.38402, 1.38402 )
+texture = ExtResource( 3 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="Player" parent="." index="1" instance=ExtResource( 4 )]
+
+[node name="ModTimer" type="Timer" parent="." index="2"]
+
+process_mode = 1
+wait_time = 0.5
+one_shot = false
+autostart = false
+
+[node name="ScoreTimer" type="Timer" parent="." index="3"]
+
+process_mode = 1
+wait_time = 1.0
+one_shot = false
+autostart = false
+
+[node name="StartTimer" type="Timer" parent="." index="4"]
+
+process_mode = 1
+wait_time = 2.0
+one_shot = true
+autostart = false
+
+[node name="StartPosition" type="Position2D" parent="." index="5"]
+
+position = Vector2( 240, 450 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="ModPath" type="Path2D" parent="." index="6"]
+
+curve = SubResource( 1 )
+
+[node name="ModSpawnLocation" type="PathFollow2D" parent="ModPath" index="0"]
+
+position = Vector2( -0.509735, 0.506927 )
+offset = 0.0
+h_offset = 0.0
+v_offset = 0.0
+rotate = true
+cubic_interp = true
+loop = true
+lookahead = 4.0
+
+[node name="HUD" parent="." index="7" instance=ExtResource( 5 )]
+
+[node name="Music" type="AudioStreamPlayer2D" parent="." index="8"]
+
+stream = ExtResource( 6 )
+volume_db = 0.0
+autoplay = false
+max_distance = 2000.0
+attenuation = 1.0
+bus = "Master"
+area_mask = 1
+
+[node name="DeathSound" type="AudioStreamPlayer2D" parent="." index="9"]
+
+stream = ExtResource( 7 )
+volume_db = 0.0
+autoplay = false
+max_distance = 2000.0
+attenuation = 1.0
+bus = "Master"
+area_mask = 1
+
+[connection signal="hit" from="Player" to="." method="game_over"]
+
+[connection signal="timeout" from="ModTimer" to="." method="_on_ModTimer_timeout"]
+
+[connection signal="timeout" from="ScoreTimer" to="." method="_on_ScoreTimer_timeout"]
+
+[connection signal="timeout" from="StartTimer" to="." method="_on_StartTimer_timeout"]
+
+[connection signal="start_game" from="HUD" to="." method="new_game"]
+
+
